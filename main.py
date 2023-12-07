@@ -41,8 +41,10 @@ class Partie:
     def nouveau_tour(self):
         action = choix_action()
         coord = choix_coord()
-        if (not(choix_possible(self.plateau, action, coord, self.state))):
-            erreur()
+        while (not(self.choix_possible(self.plateau, action, coord, self.state))):
+            print("mauvais choix!!")
+            action = choix_action()
+            coord = choix_coord()
         while (action != 'e'):
             if (action == 'r'):
                 self.retirer_dechet(coord)
@@ -95,6 +97,65 @@ class Partie:
         self.bois += 15
         self.energie -= 5
 
+    def choix_possible(self, plateau, action, coord, state):
+        if (action == 'r'):
+            return (plateau[coord[0]][coord[1]].type == 'D' and self.energie >= 15)
+        elif (action == 'f'):
+            return (plateau[coord[0]][coord[1]].type == ' ' and self.energie >= 15 and self.bois >= 10 and self.metal >= 5)
+        elif (action == 'm'):
+            return (plateau[coord[0]][coord[1]].type == 'M' and self.energie >= 10 and self.bois >= 15)
+        elif (action == 'p'):
+            return (plateau[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
+        elif (action == 'j'):
+            return (plateau[coord[0]][coord[1]].type == 'D')
+        elif (action == 'd'):
+            return (state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
+        elif (action == 'c'):
+            return (plateau[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
+
+    def fin_de_tour(self):
+        self.tour += 1
+        compteur_dechet = 0
+        compteur_nature = 0
+        self.spread()
+        for i in self.plateau:
+            for case in i:
+                if case.type == 'P':
+                    if case.plante < 2:
+                        case.plante+=1
+                    else:
+                        case.type = 'B'
+                        case.plante = 0
+                elif (case.type == 'I'):
+                    self.energie += 10
+                elif (case.type == 'D'):
+                    compteur_dechet+=1
+                if (case.type == ' ' or case.type == 'B' or case.type == 'P'):
+                    compteur_nature+=1
+        if (compteur_nature < 10):
+            perte()
+        if (compteur_dechet == 0):
+            victoire()
+
+               
+
+
+    def spread(self):
+        if (self.state == "normal"):
+            odds = 20
+        else:
+            odds = 40
+        for i in range (10):
+            for j in range (10):
+                if (self.plateau[i][j].type == 'D'):
+                    if (randint(1,100) > odds):
+                        direction = randint(0,7)
+                        if (direction == 4):
+                            direction = 8
+                        self.plateau[i+(direction//3)][j+(direction%3)].type = 'D'
+
+
+                
 
 def init_plateau():
         mat = []
@@ -107,9 +168,11 @@ def init_plateau():
                 L = []
         return mat
 
+def perte():
+    print(":'(")
 
-
-#def nouveau_tour():
+def victoire():
+    print("yipee!!")
 
 def choix_action():
     #traitement actions
@@ -118,22 +181,4 @@ def choix_action():
 def choix_coord():
     #traitement coordonnées
     return (0,0)
-
-def choix_possible(plateau, action, coord, state):
-    if (action == 'r'):
-        return (plateau[coord[0]][coord[1]].type == 'D')
-    elif (action == 'f'):
-        return (plateau[coord[0]][coord[1]].type == ' ')
-    elif (action == 'm'):
-        return (plateau[coord[0]][coord[1]].type == 'M')
-    elif (action == 'p'):
-        return (plateau[coord[0]][coord[1]].type == ' ')
-    elif (action == 'j'):
-        return (plateau[coord[0]][coord[1]].type == 'D')
-    elif (action == 'd'):
-        return (state == "pollue")
-    elif (action == 'c'):
-        return (plateau[coord[0]][coord[1]].type == 'B')
-    
-def retirer_dechet()    
         
