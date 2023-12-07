@@ -11,10 +11,10 @@ class Case:
         elif (rng < 46):
             self.type = 'M'
         else:
-            self.type = 'N'
+            self.type = ' '
 
     def afficher(self):
-        print(self.type)
+        print(self.type, end=' | ')
 
 
 class Plateau:
@@ -26,7 +26,7 @@ class Plateau:
         for i in range(0,10):
             for j in range (10):
                 self.mat[i][j].afficher()
-                print(" / ")
+            print("")
             
             
 def init_plateau():
@@ -41,6 +41,6 @@ def init_plateau():
         return mat
 
     
+def debut_partie():
+    pla = Plateau(init_plateau())
 
-pla = Plateau(init_plateau())
-pla.afficher_plateau()
