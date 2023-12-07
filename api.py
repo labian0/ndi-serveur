@@ -11,7 +11,6 @@ def get():
 
 @app.route("/post", methods=["POST"])
 def login():
-    print(request.form.get('name'))
-    return {"msg":f"bonjour "}
+    return {"msg":f"bonjour {request.form['name']}"}
 
 app.run(host="0.0.0.0")
