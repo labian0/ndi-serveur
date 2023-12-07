@@ -9,9 +9,8 @@ CORS(app)
 def get():
     return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
-@app.route("/post", methods=["POST"])
+@app.route("/login", methods=["POST"])
 def login():
-    print(request.form.get('name'))
-    return {"msg":f"bonjour "}
+    return {"msg":f"bonjour {request.form.get('username') + ' ' + request.form.get('password')}"}
 
 app.run(host="0.0.0.0")
