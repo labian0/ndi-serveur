@@ -4,6 +4,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def get():
-    return "API accédé!"
+    return [[1,1],[1,1]]
 
 app.run()
