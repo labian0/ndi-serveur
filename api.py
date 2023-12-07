@@ -4,6 +4,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def get():
-    return [[1,1],[1,1]]
+    return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
 app.run(host="0.0.0.0")
