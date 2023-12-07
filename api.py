@@ -9,7 +9,7 @@ CORS(app)
 def get():
     return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
-@app.route("/", methods=["POST"])
+@app.route("/post", methods=["POST"])
 def post():
     return {"msg":f"bonjour {request.form['name']}"}
 
