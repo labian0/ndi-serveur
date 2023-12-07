@@ -74,7 +74,6 @@ class Partie:
             action = choix_action()
         self.fin_de_tour()
 
-
     def retirer_dechet(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = ' '
         self.energie -= 15
@@ -124,6 +123,8 @@ class Partie:
             return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
         elif (action == 'c'):
             return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
+        elif (action == 'e'):
+            return True
 
     def fin_de_tour(self):
         self.tour += 1
@@ -151,9 +152,6 @@ class Partie:
         else:
             self.nouveau_tour()
 
-               
-
-
     def spread(self):
         if (self.state == "normal"):
             odds = 20
@@ -173,8 +171,6 @@ class Partie:
                         self.plateau.mat[i][j].type == 'D'
 
 
-                
-
 def init_plateau():
         mat = []
         L = []
@@ -186,18 +182,22 @@ def init_plateau():
         return mat
 
 def perte():
+    #action si perte
     print(":'(")
     quit
 
 def victoire():
+    #action si victoire
     print("yipee!!")
     quit
 
 def choix_action():
+    #import des choix
     a = input("entre une action (la première lettre)")
     return a
 
 def choix_coord():
+    #import des choix
     a = int(input ("entre la ligne de la coord (entre 0 et 9)"))
     b = int(input ("entre la colonne de la coordonnée (entre 0 et 9)"))
     return (a,b)
