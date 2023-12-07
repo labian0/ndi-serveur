@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -9,8 +9,8 @@ CORS(app)
 def get():
     return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
-@app.route("/")
+@app.route("/", methods=["POST"])
 def post():
-    return {"msg":"ok"}
+    return {"msg":f"bonjour {request.form['test']}"}
 
 app.run(host="0.0.0.0")
