@@ -27,6 +27,15 @@ class Plateau:
             for j in range (10):
                 self.mat[i][j].afficher()
             print("")
+
+    def serialiser(self):
+        newmat=[]
+        for i in range(0,10):
+            L = []
+            for j in range (10):
+                L.append(self.mat[i][j].type)
+            newmat.append(L)
+        return(newmat)
             
 
 class Partie:
@@ -39,9 +48,11 @@ class Partie:
         self.state = "normal"
 
     def nouveau_tour(self):
+        self.plateau.afficher_plateau()
+        print(self.energie, self.bois, self.metal)
         action = choix_action()
         coord = choix_coord()
-        while (not(self.choix_possible(self.plateau, action, coord, self.state))):
+        while (not(self.choix_possible(action, coord))):
             print("mauvais choix!!")
             action = choix_action()
             coord = choix_coord()
@@ -60,31 +71,32 @@ class Partie:
                 self.depolluer()
             elif (action == 'c'):
                 self.couper_arbre(coord)
-        self.fin_tour()
+            action = choix_action()
+        self.fin_de_tour()
 
 
     def retirer_dechet(self, coord):
-        self.plateau[coord[0]][coord[1]].type = ' '
+        self.plateau.mat[coord[0]][coord[1]].type = ' '
         self.energie -= 15
 
     def fabriquer_infrastructure(self, coord):
-        self.plateau[coord[0]][coord[1]].type = 'I'
+        self.plateau.mat[coord[0]][coord[1]].type = 'I'
         self.bois -= 10
         self.metal -= 5
         self.energie -= 15
 
     def recolter_minerais(self, coord):
-        self.plateau[coord[0]][coord[1]].type = ' '
+        self.plateau.mat[coord[0]][coord[1]].type = ' '
         self.bois -= 15
         self.metal += 20
         self.energie -= 10
 
     def planter_arbre(self, coord):
-        self.plateau[coord[0]][coord[1]].type = 'P'
+        self.plateau.mat[coord[0]][coord[1]].type = 'P'
 
     def jeter_dechet(self, coord):
         self.state = "pollue"
-        self.plateau[coord[0]][coord[1]].type = ' '
+        self.plateau.mat[coord[0]][coord[1]].type = ' '
 
     def depolluer(self):
         self.state = "normal"
@@ -93,32 +105,32 @@ class Partie:
         self.energie -= 15
 
     def couper_arbre(self, coord):
-        self.plateau[coord[0]][coord[1]].type = ' '
+        self.plateau.mat[coord[0]][coord[1]].type = ' '
         self.bois += 15
         self.energie -= 5
 
-    def choix_possible(self, plateau, action, coord, state):
+    def choix_possible(self, action, coord):
         if (action == 'r'):
-            return (plateau[coord[0]][coord[1]].type == 'D' and self.energie >= 15)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 15)
         elif (action == 'f'):
-            return (plateau[coord[0]][coord[1]].type == ' ' and self.energie >= 15 and self.bois >= 10 and self.metal >= 5)
+            return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 15 and self.bois >= 10 and self.metal >= 5)
         elif (action == 'm'):
-            return (plateau[coord[0]][coord[1]].type == 'M' and self.energie >= 10 and self.bois >= 15)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'M' and self.energie >= 10 and self.bois >= 15)
         elif (action == 'p'):
-            return (plateau[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
+            return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
         elif (action == 'j'):
-            return (plateau[coord[0]][coord[1]].type == 'D')
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'D')
         elif (action == 'd'):
-            return (state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
+            return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
         elif (action == 'c'):
-            return (plateau[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
 
     def fin_de_tour(self):
         self.tour += 1
         compteur_dechet = 0
         compteur_nature = 0
         self.spread()
-        for i in self.plateau:
+        for i in self.plateau.mat:
             for case in i:
                 if case.type == 'P':
                     if case.plante < 2:
@@ -136,6 +148,8 @@ class Partie:
             perte()
         if (compteur_dechet == 0):
             victoire()
+        else:
+            self.nouveau_tour()
 
                
 
@@ -147,12 +161,16 @@ class Partie:
             odds = 40
         for i in range (10):
             for j in range (10):
-                if (self.plateau[i][j].type == 'D'):
-                    if (randint(1,100) > odds):
+                if (self.plateau.mat[i][j].type == 'D'):
+                    if (randint(1,100) < odds):
                         direction = randint(0,7)
                         if (direction == 4):
                             direction = 8
-                        self.plateau[i+(direction//3)][j+(direction%3)].type = 'D'
+                        if(i+(direction//3 - 1) > -1 and i+(direction//3 - 1) < 10 and j+(direction%3 - 1) > -1 and j+(direction%3 - 1) < 10):
+                            self.plateau.mat[i+(direction//3 - 1)][j+(direction%3 - 1)].type = 'D'
+                if (self.plateau.mat[i][j].type == ' '):
+                    if (randint(1,100) <= 2):
+                        self.plateau.mat[i][j].type == 'D'
 
 
                 
@@ -161,8 +179,7 @@ def init_plateau():
         mat = []
         L = []
         for i in range(1, 101):
-            case = Case()
-            L.append(case)
+            L.append(Case())
             if (i%10 == 0):
                 mat.append(L)
                 L = []
@@ -170,15 +187,21 @@ def init_plateau():
 
 def perte():
     print(":'(")
+    quit
 
 def victoire():
     print("yipee!!")
+    quit
 
 def choix_action():
-    #traitement actions
-    return 'f'
+    a = input("entre une action (la première lettre)")
+    return a
 
 def choix_coord():
-    #traitement coordonnées
-    return (0,0)
-        
+    a = int(input ("entre la ligne de la coord (entre 0 et 9)"))
+    b = int(input ("entre la colonne de la coordonnée (entre 0 et 9)"))
+    return (a,b)
+
+if __name__ == "__main__":
+    partie = Partie()
+    partie.nouveau_tour()      
