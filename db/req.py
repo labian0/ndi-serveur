@@ -1,4 +1,5 @@
 import mysql.connector
+import hash
 
 # CREATE TABLE accounts(idUser INT NOT NULL AUTO_INCREMENT, username VARCHAR(100) NOT NULL, password VARCHAR(100) NOT NULL,sessionToken VARCHAR(100), Primary key(idUser)) ;
 
@@ -15,5 +16,6 @@ def check_user(user,passwd):
     mycursor.execute("SELECT idUser FROM accounts WHERE username = %s AND password = %s ", (user,passwd))
     return mycursor.fetchone()
 
-print(check_user("admin","admin"))
-   
+def create_user(user,passwd):
+    mycursor.execute("INSERT INTO accounts (idUser,passwd) VALUES (%s,%s)", (user,passwd))
+    
