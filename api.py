@@ -6,4 +6,4 @@ app = Flask(__name__)
 def get():
     return [[1,1],[1,1]]
 
-app.run()
+app.run(host="0.0.0.0")
