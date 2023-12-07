@@ -11,6 +11,9 @@ def get():
 
 @app.route("/login", methods=["POST"])
 def login():
-    return {"msg":f"bonjour {request.form.get('username') + ' ' + request.form.get('password')}"}
+    #communiquer avec la db tout stocker etc
+    #vérifier couple existe
+    session_token = 6969
+    return {"session_token": session_token}
 
 app.run(host="0.0.0.0")
