@@ -10,7 +10,7 @@ def get():
     return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
 @app.route("/post", methods=["POST"])
-def post():
+def login():
     print(request.form.__dict__)
     return {"msg":f"bonjour {request.form['name']}"}
 
