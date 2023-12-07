@@ -9,4 +9,8 @@ CORS(app)
 def get():
     return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
+@app.route("/")
+def post():
+    return {"msg":"ok"}
+
 app.run(host="0.0.0.0")
