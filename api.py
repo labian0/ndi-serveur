@@ -1,9 +1,16 @@
 from flask import Flask
+from flask_cors import CORS
 
 app = Flask(__name__)
 
+CORS(app)
+
 @app.route("/")
 def get():
-    return [[1,1],[1,1]]
+    return {"msg":"hllo", "plateau":[[1,1],[1,1]]}
 
-app.run()
+@app.route("/")
+def post():
+    return {"msg":"ok"}
+
+app.run(host="0.0.0.0")
