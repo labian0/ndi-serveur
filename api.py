@@ -3,6 +3,7 @@ from flask_cors import CORS
 from managers import SessionManager, GameManager
 from jwcrypto import jwt
 import req
+from main import *
 
 sm = SessionManager()
 gm = GameManager("games.json")
@@ -21,8 +22,8 @@ def login():
     if id is None:
         return Response(status=401)
     id = id[0]
-    #communiquer avec la db tout stocker etc
     session_token = sm.gen_token(id)
+    sm.add_session_id_couple(session_token, id)
     return {"session_token": session_token}
 
 @app.route("/register", methods=["POST"])
@@ -32,5 +33,15 @@ def register():
         return Response(status=200)
     except:
         return Response(status=401)
+
+@app.route("/init_plateau", methods=["POST"])
+def init_plateau():
+    session_token = request.form.get('session_token')
+    if session_token is None:
+        return Response(status=401)
+    id = sm.get_id(session_token)
+    plateau = Plateau(init_plateau())
+    plateau_serialise = plateau.serialiser()
+    return {"plateau": plateau_serialise}
 
 app.run(host="0.0.0.0")
