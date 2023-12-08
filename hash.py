@@ -28,4 +28,3 @@ def verify_password(password: str, hashed_password, salt_from_db):
 
     else:
         print ("Incorrect")
-print(hash_password("zouzou"))
