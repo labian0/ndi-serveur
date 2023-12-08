@@ -37,7 +37,10 @@ class SessionManager(): # renewed every api session
         return entry in self.dico.values()
     
     def gen_token(self):
-        return "".join([str(randint(0, 9)) for i in range(10)]) # a refaire en token jwt
+        token = None
+        while token is None or entry_exists(token):
+            token = "".join([str(randint(0, 9)) for i in range(10)]) # a refaire en token jwt
+        return token
     
     def add_session_id_couple(self, session_token, id):
         self.dico[session_token] = str(id)
