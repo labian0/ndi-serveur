@@ -40,7 +40,7 @@ def init_plateau():
     if session_token is None:
         return Response(status=401)
     id = sm.get_id(session_token)
-    plateau = Plateau(init_plateau())
+    plateau = Plateau()
     plateau_serialise = plateau.serialiser()
     return {"plateau": plateau_serialise}
 
