@@ -17,7 +17,7 @@ def get():
 @app.route("/login", methods=["POST"])
 def login():
     #communiquer avec la db tout stocker etc
-    session_token = 6969
+    session_token = sm.gen_token()
     id = 0 # choper ça avec sql
     if id is None:
         return Response(status=401)
