@@ -58,6 +58,75 @@ def retirer_dechet():
         return Response(status=401)
 
 
+@app.route("/actions/fabriquer_infrastructure", methods=["POST"])
+def fabriquer_infrastructure():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.fabriquer_infrastructure(coord)
+    a = game.serialiser
+
+
+@app.route("/actions/recolter_minerais", methods=["POST"])
+def recolter_minerais():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.recolter_minerais(coord)
+    a = game.serialiser
+
+@app.route("/actions/planter_arbre", methods=["POST"])
+def planter_arbre():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.planter_arbre(coord)
+    a = game.serialiser
+
+
+@app.route("/actions/bruler_dechet", methods=["POST"])
+def bruler_dechet():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.bruler_dechet(coord)
+    a = game.serialiser
+
+@app.route("/actions/depolluer", methods=["POST"])
+def depolluer():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.depolluer()
+    a = game.serialiser
+
+@app.route("/actions/couper_arbre", methods=["POST"])
+def couper_arbre():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.couper_arbre(coord)
+    a = game.serialiser
+
+
 @app.route("/plateau_golmon", methods=["GET"])
 def plateau_golmon():
     partie = Partie()
