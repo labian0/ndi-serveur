@@ -42,6 +42,7 @@ def init_plateau():
     id = sm.get_id(session_token)
     plateau = Plateau()
     plateau_serialise = plateau.serialiser()
+    gm.add_id_game_couple(id, plateau_serialise)
     return {"plateau": plateau_serialise}
 
 app.run(host="0.0.0.0")
