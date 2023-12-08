@@ -30,5 +30,11 @@ def create_user(user,passwd):
     mycursor.execute("INSERT INTO accounts (username,password) VALUES (%s,%s)",(user,hashed_passwd))
     mydb.commit()
 
+def check_exist(user):
+    mycursor.execute("SELECT username FROM accounts WHERE username = %s ", (user,))
+    if mycursor.fetchone() is None:
+        return False
+    return True   
+
 #print(check_user("admin","admin"))
 #create_user("admin","admin")
