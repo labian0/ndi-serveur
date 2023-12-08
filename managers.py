@@ -1,5 +1,8 @@
 import json
 from random import randint
+import jwt
+import datetime
+import os
 
 def file_exists(filename:str):
     try:
@@ -31,16 +34,35 @@ class GameManager():
 
 class SessionManager(): # renewed every api session
     def __init__(self):
+        self.SECRET_KEY = os.urandom(16)
         self.dico = {}
     
     def entry_exists(self, entry):
         return entry in self.dico.values()
     
-    def gen_token(self):
-        token = None
-        while token is None or entry_exists(token):
-            token = "".join([str(randint(0, 9)) for i in range(10)]) # a refaire en token jwt
+    def gen_token(self,user_id,expiration_minutes=60):
+        expiration_time = datetime.datetime().utcnow() + datetime.timedelta(minutes=expiration_minutes)
+
+        payload = {
+            'user-id': user_id,
+            'exp': expiration_time
+        }
+
+        token=jwt.encode(payload, self.SECRET_KEY, algorithm='HS256')
+
         return token
+
+    def extract_and_decode_token(self, token):
+        try:
+            decoded_token = jwt.decode(token,self.SECRET_KEY,algorithms=['HS256'])
+            payload = decoded_token
+            return payload
+        except jwt.ExpiredSignatureError:
+            print("Le token a expiré")
+            return None
+        except jwt.InvalidTokenError:
+            print("Token invalide")
+            return None
     
     def add_session_id_couple(self, session_token, id):
         self.dico[session_token] = str(id)
