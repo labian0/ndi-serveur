@@ -19,8 +19,8 @@ class Case:
 
 
 class Plateau:
-    def __init__(self, mat):
-        self.mat = mat
+    def __init__(self):
+        self.mat = init_plateau()
 
     def afficher_plateau(self):
         for i in range(0,10):
@@ -40,7 +40,7 @@ class Plateau:
 
 class Partie:
     def __init__(self):
-        self.plateau = Plateau(init_plateau())
+        self.plateau = Plateau()
         self.tour = 1
         self.energie = 30
         self.bois = 30
@@ -72,6 +72,8 @@ class Partie:
             elif (action == 'c'):
                 self.couper_arbre(coord)
             action = choix_action()
+            if (action != 'e'):
+                break
             coord = choix_coord()
         self.fin_de_tour()
 
@@ -103,7 +105,7 @@ class Partie:
         self.state = "normal"
         self.bois -= 20
         self.metal -= 10
-        self.energie -= 15
+        self.energie -= 30
 
     def couper_arbre(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = ' '

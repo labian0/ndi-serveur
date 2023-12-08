@@ -3,10 +3,10 @@ from random import randint
 
 class Case:
     def __init__(self):
-        self.type='M'
+        self.type=' '
         rng = randint(1,100)
         if (rng < 30):
-            self.type = 'P'
+            self.type = 'D'
 
     def afficher(self):
         print(self.type, end=' | ')
@@ -40,6 +40,7 @@ class Partie:
         self.bois = 30
         self.plastique = 30
         self.state = "normal"
+        self.rapport= False
 
     def nouveau_tour(self):
         self.plateau.afficher_plateau()
@@ -52,15 +53,13 @@ class Partie:
             coord = choix_coord()
         while (action != 'e'):
             if (action == 'r'):
-                self.retirer_dechet(coord)
+                self.collecter_plastique(coord)
             elif (action == 'f'):
                 self.fabriquer_infrastructure(coord)
-            elif (action == 'm'):
-                self.recolter_minerais(coord)
             elif (action == 'p'):
                 self.planter_arbre(coord)
-            elif (action == 'j'):
-                self.jeter_dechet(coord)
+            elif (action == 'b'):
+                self.bruler_dechet(coord)
             elif (action == 'd'):
                 self.depolluer()
             elif (action == 'c'):
@@ -82,8 +81,9 @@ class Partie:
 
     def planter_arbre(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = 'P'
+        self.energie -= 10
 
-    def jeter_dechet(self, coord):
+    def bruler_dechet(self, coord):
         self.state = "pollue"
         self.plateau.mat[coord[0]][coord[1]].type = ' '
 
@@ -91,26 +91,34 @@ class Partie:
         self.state = "normal"
         self.bois -= 20
         self.plastique -= 10
-        self.energie -= 15
+        self.energie -= 30
 
     def couper_arbre(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = ' '
         self.bois += 15
         self.energie -= 5
 
+    def lancer_rapport(self):
+        self.rapport = True
+        self.bois -= 10
+        self.plastique -= 20
+        self.energie -= 50
+
     def choix_possible(self, action, coord):
         if (action == 'r'):
-            return (self.plateau.mat[coord[0]][coord[1]].type == 'P' and self.energie >= 10)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 10)
         elif (action == 'f'):
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10 and self.bois >= 10 and self.plastique >= 20)
         elif (action == 'p'):
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
-        elif (action == 'j'):
+        elif (action == 'b'):
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D')
         elif (action == 'd'):
-            return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
+            return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.plastique >= 10)
         elif (action == 'c'):
             return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
+        elif (action == 'l'):
+            return (self.energie >= 50 and self.bois >= 10 and self.plastique >= 20)
         elif (action == 'e'):
             return True
 
@@ -118,7 +126,6 @@ class Partie:
         self.tour += 1
         compteur_dechet = 0
         compteur_nature = 0
-        self.spread()
         for i in self.plateau.mat:
             for case in i:
                 if case.type == 'P':
@@ -131,7 +138,7 @@ class Partie:
                     self.energie += 10
                 elif (case.type == 'D'):
                     compteur_dechet+=1
-                if (case.type == ' ' or case.type == 'B' or case.type == 'P'):
+                if (case.type == 'I' or case.type == 'B' or case.type == 'P' or case.type == ' '):
                     compteur_nature+=1
         if (compteur_nature < 10):
             perte()
@@ -141,22 +148,17 @@ class Partie:
             self.nouveau_tour()
 
     def spread(self):
-        if (self.state == "normal"):
-            odds = 20
-        else:
-            odds = 40
-        for i in range (10):
-            for j in range (10):
-                if (self.plateau.mat[i][j].type == 'D'):
-                    if (randint(1,100) < odds):
-                        direction = randint(0,7)
-                        if (direction == 4):
-                            direction = 8
-                        if(i+(direction//3 - 1) > -1 and i+(direction//3 - 1) < 10 and j+(direction%3 - 1) > -1 and j+(direction%3 - 1) < 10):
-                            self.plateau.mat[i+(direction//3 - 1)][j+(direction%3 - 1)].type = 'D'
-                if (self.plateau.mat[i][j].type == ' '):
-                    if (randint(1,100) <= 2):
-                        self.plateau.mat[i][j].type == 'D'
+        odds = 10
+        if (self.state=="pollue"):
+            odds*=2
+        if (self.rapport==True):
+            odds/=2
+        for i in self.plateau.mat:
+            for case in i:
+                rng = randint(0,99)
+                if (rng < odds):
+                    case.type= "P"
+        
 
 
 def init_plateau():
