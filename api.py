@@ -27,6 +27,9 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
+    id = req.check_user(request.form.get('username'),request.form.get('password'))
+    if id is not None:
+        return Response(status=401)
     try:
         req.create_user(request.form.get('username'), request.form.get('password'))
         return Response(status=200)
