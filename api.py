@@ -1,5 +1,9 @@
 from flask import Flask, request
 from flask_cors import CORS
+from managers import SessionManager, GameManager
+
+sm = SessionManager()
+gm = GameManager("games.json")
 
 app = Flask(__name__)
 
