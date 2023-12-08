@@ -183,6 +183,13 @@ class Partie:
                 L.append(self.plateau.mat[i][j].type)
             newmat.append(L)
         return({ "mat" : newmat, "energie" : self.energie, "bois" : self.bois, "metal" : self.metal, "tour" : self.tour})
+    
+    def deserialiser(self, json):
+        self.plateau.mat = json["mat"]
+        self.energie = json["energie"]
+        self.bois = json["bois"]
+        self.metal = json["metal"]
+        self.tour = json["tour"]
 
 
 def init_plateau():

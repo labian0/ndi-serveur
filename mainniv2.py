@@ -106,21 +106,21 @@ class Partie:
         self.energie -= 50
 
     def choix_possible(self, action, coord):
-        if (action == 'r'):
+        if (action == 'r'): # récolter du plastique
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 10)
-        elif (action == 'f'):
+        elif (action == 'f'): # fabriquer une infrastructure
             return (self.plateau.mat[coord[0]][coord[1]].type == 'T' and self.energie >= 10 and self.bois >= 10 and self.plastique >= 20)
-        elif (action == 'p'):
+        elif (action == 'p'): # planter des arbres
             return (self.plateau.mat[coord[0]][coord[1]].type == 'T' and self.energie >= 10)
-        elif (action == 'b'):
+        elif (action == 'b'): # bruler des déchets
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D')
-        elif (action == 'd'):
+        elif (action == 'd'): # dépolluer
             return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.plastique >= 10)
-        elif (action == 'c'):
+        elif (action == 'c'): # couper des arbres
             return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
-        elif (action == 'l'):
+        elif (action == 'l'): # lancer un rapport sur le climat
             return (self.energie >= 50 and self.bois >= 10 and self.plastique >= 20)
-        elif (action == 'e'):
+        elif (action == 'e'): # finir le tour
             return True
 
     def fin_de_tour(self):
@@ -175,6 +175,14 @@ class Partie:
                 L.append(self.plateau.mat[i][j].type)
             newmat.append(L)
         return({ "mat" : newmat, "energie" : self.energie, "bois" : self.bois, "plastique" : self.plastique, "tour" : self.tour})
+    
+    def deserialiser(self, json):
+        self.plateau.mat = json["mat"]
+        self.energie = json["energie"]
+        self.bois = json["bois"]
+        self.plastique = json["plastique"]
+        self.tour = json["tour"]
+
         
 def init_plateau():
         mat = []
