@@ -30,5 +30,5 @@ def create_user(user,passwd):
     mycursor.execute("INSERT INTO accounts (username,password) VALUES (%s,%s)",(user,hashed_passwd))
     mydb.commit()
 
-print(check_user("admin","admin"))
+#print(check_user("admin","admin"))
 #create_user("admin","admin")
