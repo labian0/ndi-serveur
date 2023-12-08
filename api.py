@@ -21,7 +21,6 @@ def login():
     id = req.check_user(request.form.get('username'),request.form.get('password'))
     if id is None:
         return Response(status=401)
-    id = id[0]
     session_token = sm.gen_token(id)
     sm.add_session_id_couple(session_token, id)
     return {"session_token": session_token}
