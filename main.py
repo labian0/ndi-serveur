@@ -174,6 +174,15 @@ class Partie:
                     if (randint(1,100) <= 2):
                         self.plateau.mat[i][j].type == 'D'
 
+    def serialiser(self):
+        newmat=[]
+        for i in range(0,10):
+            L = []
+            for j in range (10):
+                L.append(self.plateau.mat[i][j].type)
+            newmat.append(L)
+        return(newmat, self.energie, self.bois, self.metal, self.tour)
+
 
 def init_plateau():
         mat = []

@@ -4,6 +4,7 @@ from random import randint
 class Case:
     def __init__(self):
         self.type=' '
+        self.background = 'M'
         rng = randint(1,100)
         if (rng < 30):
             self.type = 'D'
@@ -13,8 +14,8 @@ class Case:
 
 
 class Plateau:
-    def __init__(self, mat):
-        self.mat = mat
+    def __init__(self):
+        self.mat = init_plateau()
 
     def afficher_plateau(self):
         for i in range(0,10):
@@ -34,7 +35,7 @@ class Plateau:
 
 class Partie:
     def __init__(self):
-        self.plateau = Plateau(init_plateau())
+        self.plateau = Plateau()
         self.tour = 1
         self.energie = 30
         self.bois = 30
@@ -44,7 +45,7 @@ class Partie:
 
     def nouveau_tour(self):
         self.plateau.afficher_plateau()
-        print(self.energie, self.bois, self.metal)
+        print(self.energie, self.bois, self.plastique)
         action = choix_action()
         coord = choix_coord()
         while (not(self.choix_possible(action, coord))):
@@ -65,11 +66,16 @@ class Partie:
             elif (action == 'c'):
                 self.couper_arbre(coord)
             action = choix_action()
+            if (action != 'e'):
+                break
             coord = choix_coord()
         self.fin_de_tour()
 
     def collecter_plastique(self, coord):
-        self.plateau.mat[coord[0]][coord[1]].type = ' '
+        if (self.plateau.mat[coord[0]][coord[1]].background == 'M'):
+            self.plateau.mat[coord[0]][coord[1]].type = ' '
+        else:
+            self.plateau.mat[coord[0]][coord[1]].type = 'T'
         self.energie -= 10
         self.plastique += 10
 
@@ -94,7 +100,10 @@ class Partie:
         self.energie -= 30
 
     def couper_arbre(self, coord):
-        self.plateau.mat[coord[0]][coord[1]].type = ' '
+        if (self.plateau.mat[coord[0]][coord[1]].background == 'M'):
+            self.plateau.mat[coord[0]][coord[1]].type = ' '
+        else:
+            self.plateau.mat[coord[0]][coord[1]].type = 'T'
         self.bois += 15
         self.energie -= 5
 
@@ -108,9 +117,9 @@ class Partie:
         if (action == 'r'):
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 10)
         elif (action == 'f'):
-            return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10 and self.bois >= 10 and self.plastique >= 20)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'T' and self.energie >= 10 and self.bois >= 10 and self.plastique >= 20)
         elif (action == 'p'):
-            return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'T' and self.energie >= 10)
         elif (action == 'b'):
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D')
         elif (action == 'd'):
@@ -138,8 +147,14 @@ class Partie:
                     self.energie += 10
                 elif (case.type == 'D'):
                     compteur_dechet+=1
-                if (case.type == 'I' or case.type == 'B' or case.type == 'P' or case.type == ' '):
+                if (case.type == 'T' or case.type == 'B' or case.type == 'P' or case.type == ' '):
                     compteur_nature+=1
+        for i in self.plateau.mat:
+            for case in i:
+                if (case.type == 'T' or case.type == 'B' or case.type == 'P'):
+                    rng = randint(0,99)
+                    if (rng < compteur_dechet//10):
+                        case.type == ' '
         if (compteur_nature < 10):
             perte()
         if (compteur_dechet == 0):
@@ -159,8 +174,6 @@ class Partie:
                 if (rng < odds):
                     case.type= "P"
         
-
-
 def init_plateau():
         mat = []
         L = []
@@ -170,21 +183,28 @@ def init_plateau():
                 mat.append(L)
                 L = []
         for i in range (4):
-            creer_ile(mat)        
+            mat = creer_ile(mat) 
         return mat
 
 def creer_ile(mat):
     rng= randint (0,99)
     taille = randint(5,10)
-    agrandir_ile(mat, (rng//10, rng%10), taille)
+    mat = agrandir_ile(mat, (rng//10, rng%10), taille)
+    return mat
 
 def agrandir_ile(mat, coord, taille):
-    mat[coord[0]][coord[1]].type = 'I'
-    if (taille != 0):
-        rng = randint(1,7)
-        if (rng == 4):
-            rng = 8
-        agrandir_ile(mat, (coord[0] + rng//3 -1, coord[1] + rng%3 -1), taille -1)
+    while (taille > 0):
+        i = randint (-1, 1)
+        j = randint (-1, 1)
+        coord = (coord[0] + i , coord[1] + j)
+        if (coord[0] > -1 and coord[0] < 10 and coord[1] > 0 and coord[1] < 10):
+            mat[coord[0]][coord[1]].background = 'T'
+            if (randint(1,10)<=3):
+                mat[coord[0]][coord[1]].type = 'B'
+            else:
+                mat[coord[0]][coord[1]].type = 'T'
+        taille -=1
+    return mat
 
 
 def perte():
