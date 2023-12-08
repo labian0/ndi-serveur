@@ -1,7 +1,7 @@
 import json
 from random import randint
 import jwt
-import datetime
+from time import time
 import os
 
 def file_exists(filename:str):
@@ -41,7 +41,7 @@ class SessionManager(): # renewed every api session
         return entry in self.dico.values()
     
     def gen_token(self,user_id,expiration_minutes=60):
-        expiration_time = datetime.datetime().utcnow() + datetime.timedelta(minutes=expiration_minutes)
+        expiration_time = int(time()) + 60*expiration_minutes
 
         payload = {
             'user-id': user_id,

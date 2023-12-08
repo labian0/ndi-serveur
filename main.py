@@ -19,8 +19,8 @@ class Case:
 
 
 class Plateau:
-    def __init__(self, mat):
-        self.mat = mat
+    def __init__(self):
+        self.mat = init_plateau()
 
     def afficher_plateau(self):
         for i in range(0,10):
@@ -40,7 +40,7 @@ class Plateau:
 
 class Partie:
     def __init__(self):
-        self.plateau = Plateau(init_plateau())
+        self.plateau = Plateau()
         self.tour = 1
         self.energie = 30
         self.bois = 30
@@ -51,28 +51,31 @@ class Partie:
         self.plateau.afficher_plateau()
         print(self.energie, self.bois, self.metal)
         action = choix_action()
-        coord = choix_coord()
-        while (not(self.choix_possible(action, coord))):
-            print("mauvais choix!!")
-            action = choix_action()
+        if (action != 'e'):
             coord = choix_coord()
-        while (action != 'e'):
-            if (action == 'r'):
-                self.retirer_dechet(coord)
-            elif (action == 'f'):
-                self.fabriquer_infrastructure(coord)
-            elif (action == 'm'):
-                self.recolter_minerais(coord)
-            elif (action == 'p'):
-                self.planter_arbre(coord)
-            elif (action == 'j'):
-                self.jeter_dechet(coord)
-            elif (action == 'd'):
-                self.depolluer()
-            elif (action == 'c'):
-                self.couper_arbre(coord)
-            action = choix_action()
-            coord = choix_coord()
+            while (not(self.choix_possible(action, coord))):
+                print("mauvais choix!!")
+                action = choix_action()
+                if (action != 'e'):
+                    coord = choix_coord()
+            while (action != 'e'):
+                if (action == 'r'):
+                    self.retirer_dechet(coord)
+                elif (action == 'f'):
+                    self.fabriquer_infrastructure(coord)
+                elif (action == 'm'):
+                    self.recolter_minerais(coord)
+                elif (action == 'p'):
+                    self.planter_arbre(coord)
+                elif (action == 'b'):
+                    self.bruler_dechet(coord)
+                elif (action == 'd'):
+                    self.depolluer()
+                elif (action == 'c'):
+                    self.couper_arbre(coord)
+                action = choix_action()
+                if (action != 'e'):
+                    coord = choix_coord()
         self.fin_de_tour()
 
     def retirer_dechet(self, coord):
@@ -95,7 +98,7 @@ class Partie:
         self.plateau.mat[coord[0]][coord[1]].type = 'P'
         self.energie -= 10
 
-    def jeter_dechet(self, coord):
+    def bruler_dechet(self, coord):
         self.state = "pollue"
         self.plateau.mat[coord[0]][coord[1]].type = ' '
 
@@ -103,7 +106,7 @@ class Partie:
         self.state = "normal"
         self.bois -= 20
         self.metal -= 10
-        self.energie -= 15
+        self.energie -= 30
 
     def couper_arbre(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = ' '
@@ -111,21 +114,21 @@ class Partie:
         self.energie -= 5
 
     def choix_possible(self, action, coord):
-        if (action == 'r'):
+        if (action == 'r'): # retirer des déchets
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 15)
-        elif (action == 'f'):
+        elif (action == 'f'): # fabriquer une infrastructure
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 15 and self.bois >= 10 and self.metal >= 5)
-        elif (action == 'm'):
+        elif (action == 'm'): # récolter des métaux
             return (self.plateau.mat[coord[0]][coord[1]].type == 'M' and self.energie >= 10 and self.bois >= 15)
-        elif (action == 'p'):
+        elif (action == 'p'): # planter des arbres
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
-        elif (action == 'j'):
+        elif (action == 'b'): # jeter des déchets
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D')
-        elif (action == 'd'):
+        elif (action == 'd'): # dépolluer
             return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
-        elif (action == 'c'):
+        elif (action == 'c'): # couper des arbres
             return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
-        elif (action == 'e'):
+        elif (action == 'e'): # finir le tour
             return True
 
     def fin_de_tour(self):
@@ -171,6 +174,22 @@ class Partie:
                 if (self.plateau.mat[i][j].type == ' '):
                     if (randint(1,100) <= 2):
                         self.plateau.mat[i][j].type == 'D'
+
+    def serialiser(self):
+        newmat=[]
+        for i in range(0,10):
+            L = []
+            for j in range (10):
+                L.append(self.plateau.mat[i][j].type)
+            newmat.append(L)
+        return({ "mat" : newmat, "energie" : self.energie, "bois" : self.bois, "metal" : self.metal, "tour" : self.tour})
+    
+    def deserialiser(self, json):
+        self.plateau.mat = json["mat"]
+        self.energie = json["energie"]
+        self.bois = json["bois"]
+        self.metal = json["metal"]
+        self.tour = json["tour"]
 
 
 def init_plateau():

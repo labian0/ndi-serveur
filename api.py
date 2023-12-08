@@ -18,16 +18,21 @@ def get():
 
 @app.route("/login", methods=["POST"])
 def login():
-    id = req.check_user(request.form.get('username'),request.form.get('password'))
-    if id is None:
+    exists = req.check_exist(request.form.get('username'))
+    if not exists:
         return Response(status=401)
-    id = id[0]
+    id = req.check_user(request.form.get("username"), request.form.get("password"))
+    if id is None:        
+        return Response(status=401)
     session_token = sm.gen_token(id)
     sm.add_session_id_couple(session_token, id)
     return {"session_token": session_token}
 
 @app.route("/register", methods=["POST"])
 def register():
+    exists = req.check_exist(request.form.get('username'))
+    if exists:
+        return Response(status=401)
     try:
         req.create_user(request.form.get('username'), request.form.get('password'))
         return Response(status=200)
@@ -40,9 +45,21 @@ def init_plateau():
     if session_token is None:
         return Response(status=401)
     id = sm.get_id(session_token)
-    plateau = Plateau()
-    plateau_serialise = plateau.serialiser()
-    gm.add_id_game_couple(id, plateau_serialise)
-    return {"plateau": plateau_serialise}
+    partie = Partie()
+    partie_ser = partie.serialiser()
+    gm.add_id_game_couple(id, partie_ser)
+    return partie_ser
+
+@app.route("/plateau_golmon", methods=["GET"])
+def plateau_golmon():
+    partie = Partie()
+    partie_ser = partie.serialiser()
+    gm.add_id_game_couple(id, partie_ser)
+    return partie_ser
+
+@app.route("/save") #DEBUG FUNCTION
+def save_gm():
+    gm.save()
+    return Response(status=200)
 
 app.run(host="0.0.0.0")

@@ -9,7 +9,7 @@ def hash_password(password: str):
     #Génération aléatoire d'un salt
     salt = os.urandom(32)
 
-    combined = bytes(password + salt)
+    combined = bytes(password, "utf-8") + salt
     hashed_password = HASH.update(combined)
     hashed_password.digest()
 
@@ -28,4 +28,3 @@ def verify_password(password: str, hashed_password, salt_from_db):
 
     else:
         print ("Incorrect")
-print(hash_password("zouzou"))
