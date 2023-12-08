@@ -67,8 +67,8 @@ class Partie:
                     self.recolter_minerais(coord)
                 elif (action == 'p'):
                     self.planter_arbre(coord)
-                elif (action == 'j'):
-                    self.jeter_dechet(coord)
+                elif (action == 'b'):
+                    self.bruler_dechet(coord)
                 elif (action == 'd'):
                     self.depolluer()
                 elif (action == 'c'):
@@ -98,7 +98,7 @@ class Partie:
         self.plateau.mat[coord[0]][coord[1]].type = 'P'
         self.energie -= 10
 
-    def jeter_dechet(self, coord):
+    def bruler_dechet(self, coord):
         self.state = "pollue"
         self.plateau.mat[coord[0]][coord[1]].type = ' '
 
@@ -114,21 +114,21 @@ class Partie:
         self.energie -= 5
 
     def choix_possible(self, action, coord):
-        if (action == 'r'):
+        if (action == 'r'): # retirer des déchets
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 15)
-        elif (action == 'f'):
+        elif (action == 'f'): # fabriquer une infrastructure
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 15 and self.bois >= 10 and self.metal >= 5)
-        elif (action == 'm'):
+        elif (action == 'm'): # récolter des métaux
             return (self.plateau.mat[coord[0]][coord[1]].type == 'M' and self.energie >= 10 and self.bois >= 15)
-        elif (action == 'p'):
+        elif (action == 'p'): # planter des arbres
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
-        elif (action == 'j'):
+        elif (action == 'b'): # jeter des déchets
             return (self.plateau.mat[coord[0]][coord[1]].type == 'D')
-        elif (action == 'd'):
+        elif (action == 'd'): # dépolluer
             return (self.state == "pollue" and self.energie >= 30 and self.bois >= 20 and self.metal >= 10)
-        elif (action == 'c'):
+        elif (action == 'c'): # couper des arbres
             return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
-        elif (action == 'e'):
+        elif (action == 'e'): # finir le tour
             return True
 
     def fin_de_tour(self):
