@@ -182,7 +182,7 @@ class Partie:
             for j in range (10):
                 L.append(self.plateau.mat[i][j].type)
             newmat.append(L)
-        return(newmat, self.energie, self.bois, self.metal, self.tour)
+        return({ "mat" : newmat, "energie" : self.energie, "bois" : self.bois, "metal" : self.metal, "tour" : self.tour})
 
 
 def init_plateau():

@@ -8,6 +8,7 @@ class Case:
         rng = randint(1,100)
         if (rng < 30):
             self.type = 'D'
+        self.plante = 0
 
     def afficher(self):
         print(self.type, end=' | ')
@@ -164,7 +165,7 @@ class Partie:
             for case in i:
                 rng = randint(0,99)
                 if (rng < odds):
-                    case.type= "P"
+                    case.type= "D"
 
     def serialiser(self):
         newmat=[]
@@ -173,7 +174,7 @@ class Partie:
             for j in range (10):
                 L.append(self.plateau.mat[i][j].type)
             newmat.append(L)
-        return(newmat, self.energie, self.bois, self.plastique, self.tour)
+        return({ "mat" : newmat, "energie" : self.energie, "bois" : self.bois, "plastique" : self.plastique, "tour" : self.tour})
         
 def init_plateau():
         mat = []
