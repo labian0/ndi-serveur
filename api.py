@@ -18,8 +18,11 @@ def get():
 
 @app.route("/login", methods=["POST"])
 def login():
-    id = req.check_exist(request.form.get('username'))
-    if not id:
+    exists = req.check_exist(request.form.get('username'))
+    if not exists:
+        return Response(status=401)
+    id = req.check_user(request.form.get("username"), request.form.get("password"))
+    if id is None:        
         return Response(status=401)
     session_token = sm.gen_token(id)
     sm.add_session_id_couple(session_token, id)
@@ -27,8 +30,8 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
-    id = req.check_exist(request.form.get('username'))
-    if id:
+    exists = req.check_exist(request.form.get('username'))
+    if exists:
         return Response(status=401)
     try:
         req.create_user(request.form.get('username'), request.form.get('password'))
