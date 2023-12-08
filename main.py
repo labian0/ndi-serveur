@@ -72,6 +72,7 @@ class Partie:
             elif (action == 'c'):
                 self.couper_arbre(coord)
             action = choix_action()
+            coord = choix_coord()
         self.fin_de_tour()
 
     def retirer_dechet(self, coord):
