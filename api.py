@@ -174,13 +174,6 @@ def couper_arbre():
     a = game.serialiser()
     return a
 
-@app.route("/plateau_golmon", methods=["GET"])
-def plateau_golmon():
-    partie = Partie()
-    partie_ser = partie.serialiser()
-    gm.add_id_game_couple(id, partie_ser)
-    return partie_ser
-
 @app.route("/save") #DEBUG FUNCTION
 def save_gm():
     gm.save()
