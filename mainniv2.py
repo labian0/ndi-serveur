@@ -23,16 +23,6 @@ class Plateau:
                 self.mat[i][j].afficher()
             print("")
 
-    def serialiser(self):
-        newmat=[]
-        for i in range(0,10):
-            L = []
-            for j in range (10):
-                L.append(self.mat[i][j].type)
-            newmat.append(L)
-        return(newmat)
-            
-
 class Partie:
     def __init__(self):
         self.plateau = Plateau()
@@ -47,28 +37,29 @@ class Partie:
         self.plateau.afficher_plateau()
         print(self.energie, self.bois, self.plastique)
         action = choix_action()
-        coord = choix_coord()
-        while (not(self.choix_possible(action, coord))):
-            print("mauvais choix!!")
-            action = choix_action()
+        if (action != 'e'):
             coord = choix_coord()
-        while (action != 'e'):
-            if (action == 'r'):
-                self.collecter_plastique(coord)
-            elif (action == 'f'):
-                self.fabriquer_infrastructure(coord)
-            elif (action == 'p'):
-                self.planter_arbre(coord)
-            elif (action == 'b'):
-                self.bruler_dechet(coord)
-            elif (action == 'd'):
-                self.depolluer()
-            elif (action == 'c'):
-                self.couper_arbre(coord)
-            action = choix_action()
-            if (action != 'e'):
-                break
-            coord = choix_coord()
+            while (not(self.choix_possible(action, coord))):
+                print("mauvais choix!!")
+                action = choix_action()
+                if (action != 'e'):
+                    coord = choix_coord()
+            while (action != 'e'):
+                if (action == 'r'):
+                    self.collecter_plastique(coord)
+                elif (action == 'f'):
+                    self.fabriquer_infrastructure(coord)
+                elif (action == 'p'):
+                    self.planter_arbre(coord)
+                elif (action == 'b'):
+                    self.bruler_dechet(coord)
+                elif (action == 'd'):
+                    self.depolluer()
+                elif (action == 'c'):
+                    self.couper_arbre(coord)
+                action = choix_action()
+                if (action != 'e'):
+                    coord = choix_coord()
         self.fin_de_tour()
 
     def collecter_plastique(self, coord):
@@ -135,6 +126,7 @@ class Partie:
         self.tour += 1
         compteur_dechet = 0
         compteur_nature = 0
+        self.spread()
         for i in self.plateau.mat:
             for case in i:
                 if case.type == 'P':
@@ -173,6 +165,15 @@ class Partie:
                 rng = randint(0,99)
                 if (rng < odds):
                     case.type= "P"
+
+    def serialiser(self):
+        newmat=[]
+        for i in range(0,10):
+            L = []
+            for j in range (10):
+                L.append(self.plateau.mat[i][j].type)
+            newmat.append(L)
+        return(newmat, self.energie, self.bois, self.plastique, self.tour)
         
 def init_plateau():
         mat = []

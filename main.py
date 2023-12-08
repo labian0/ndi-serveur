@@ -51,30 +51,31 @@ class Partie:
         self.plateau.afficher_plateau()
         print(self.energie, self.bois, self.metal)
         action = choix_action()
-        coord = choix_coord()
-        while (not(self.choix_possible(action, coord))):
-            print("mauvais choix!!")
-            action = choix_action()
+        if (action != 'e'):
             coord = choix_coord()
-        while (action != 'e'):
-            if (action == 'r'):
-                self.retirer_dechet(coord)
-            elif (action == 'f'):
-                self.fabriquer_infrastructure(coord)
-            elif (action == 'm'):
-                self.recolter_minerais(coord)
-            elif (action == 'p'):
-                self.planter_arbre(coord)
-            elif (action == 'j'):
-                self.jeter_dechet(coord)
-            elif (action == 'd'):
-                self.depolluer()
-            elif (action == 'c'):
-                self.couper_arbre(coord)
-            action = choix_action()
-            if (action != 'e'):
-                break
-            coord = choix_coord()
+            while (not(self.choix_possible(action, coord))):
+                print("mauvais choix!!")
+                action = choix_action()
+                if (action != 'e'):
+                    coord = choix_coord()
+            while (action != 'e'):
+                if (action == 'r'):
+                    self.retirer_dechet(coord)
+                elif (action == 'f'):
+                    self.fabriquer_infrastructure(coord)
+                elif (action == 'm'):
+                    self.recolter_minerais(coord)
+                elif (action == 'p'):
+                    self.planter_arbre(coord)
+                elif (action == 'j'):
+                    self.jeter_dechet(coord)
+                elif (action == 'd'):
+                    self.depolluer()
+                elif (action == 'c'):
+                    self.couper_arbre(coord)
+                action = choix_action()
+                if (action != 'e'):
+                    coord = choix_coord()
         self.fin_de_tour()
 
     def retirer_dechet(self, coord):
