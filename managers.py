@@ -33,8 +33,8 @@ class GameManager():
 
 
 class SessionManager(): # renewed every api session
-    self.SECRET_KEY = os.urandom(16)
     def __init__(self):
+        self.SECRET_KEY = os.urandom(16)
         self.dico = {}
     
     def entry_exists(self, entry):
