@@ -55,6 +55,7 @@ def init_plateau():
 @app.route("/actions_disponibles", methods=["POST"])
 def actions_disponibles():
     coord = request.form.get('coord')
+    print(coord)
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
