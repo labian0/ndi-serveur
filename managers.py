@@ -47,7 +47,7 @@ class SessionManager(): # renewed every api session
         self.dico = {}
     
     def entry_exists(self, entry):
-        return entry in self.dico.values()
+        return entry in self.dico.keys()
     
     def gen_token(self,user_id,expiration_minutes=60):
         expiration_time = int(time()) + 60*expiration_minutes
