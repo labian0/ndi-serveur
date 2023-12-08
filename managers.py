@@ -23,12 +23,21 @@ class GameManager():
             self.dico = json.loads(f.read())
         self.filename = filename
     
+    def entry_exists(self, entry):
+        return entry in self.dico.values()
+    
     def save(self):
         with open(self.filename, "w") as f:
             f.write(json.dumps(self.dico))
     
     def add_id_game_couple(self, id, game):
         self.dico[id] = game
+    
+    def get_game(self, id):
+        id = str(id)
+        if self.entry_exists(id):
+            return self.dico[id]
+        return None
 
 
 

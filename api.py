@@ -56,6 +56,12 @@ def retirer_dechet():
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
+    ser_game = gm.get_game(id)
+    if ser_game is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.retirer_dechet(coord)
 
 
 @app.route("/plateau_golmon", methods=["GET"])
