@@ -175,6 +175,17 @@ def couper_arbre():
     a = game.serialiser()
     return a
 
+@app.route("/actions/finir_tour", methods=["POST"])
+def finir_tour():
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    game.fin_de_tour()
+    return game.serialiser()
+
 @app.route("/save") #DEBUG FUNCTION
 def save_gm():
     gm.save()
