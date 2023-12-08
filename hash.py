@@ -9,7 +9,7 @@ def hash_password(password: str):
     #Génération aléatoire d'un salt
     salt = os.urandom(32)
 
-    combined = bytes(bytes(password, "utf-8") + salt)
+    combined = bytes(password, "utf-8") + salt
     hashed_password = HASH.update(combined)
     hashed_password.digest()
 
