@@ -53,10 +53,10 @@ def init_plateau():
 @app.route("/actions/retirer_dechet", methods=["POST"])
 def retirer_dechet():
     session_token = request.form.get('session_token')
-    if session_token is None or not sm.entry_exists(session_token):
-        return Response(status=401)
     id = sm.get_id(session_token)
-    
+    if id is None:
+        return Response(status=401)
+
 
 @app.route("/plateau_golmon", methods=["GET"])
 def plateau_golmon():
