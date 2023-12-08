@@ -3,16 +3,10 @@ from random import randint
 
 class Case:
     def __init__(self):
+        self.type='M'
         rng = randint(1,100)
-        if (rng < 11):
-            self.type = 'D'
-        elif (rng < 31):
-            self.type = 'B'
-        elif (rng < 46):
-            self.type = 'M'
-        else:
-            self.type = ' '
-        self.plante = 0
+        if (rng < 30):
+            self.type = 'P'
 
     def afficher(self):
         print(self.type, end=' | ')
@@ -44,7 +38,7 @@ class Partie:
         self.tour = 1
         self.energie = 30
         self.bois = 30
-        self.metal = 30
+        self.plastique = 30
         self.state = "normal"
 
     def nouveau_tour(self):
@@ -75,25 +69,19 @@ class Partie:
             coord = choix_coord()
         self.fin_de_tour()
 
-    def retirer_dechet(self, coord):
+    def collecter_plastique(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = ' '
-        self.energie -= 15
+        self.energie -= 10
+        self.plastique += 10
 
     def fabriquer_infrastructure(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = 'I'
         self.bois -= 10
-        self.metal -= 5
-        self.energie -= 15
-
-    def recolter_minerais(self, coord):
-        self.plateau.mat[coord[0]][coord[1]].type = ' '
-        self.bois -= 15
-        self.metal += 20
+        self.plastique -= 20
         self.energie -= 10
 
     def planter_arbre(self, coord):
         self.plateau.mat[coord[0]][coord[1]].type = 'P'
-        self.energie -= 10
 
     def jeter_dechet(self, coord):
         self.state = "pollue"
@@ -102,7 +90,7 @@ class Partie:
     def depolluer(self):
         self.state = "normal"
         self.bois -= 20
-        self.metal -= 10
+        self.plastique -= 10
         self.energie -= 15
 
     def couper_arbre(self, coord):
@@ -112,11 +100,9 @@ class Partie:
 
     def choix_possible(self, action, coord):
         if (action == 'r'):
-            return (self.plateau.mat[coord[0]][coord[1]].type == 'D' and self.energie >= 15)
+            return (self.plateau.mat[coord[0]][coord[1]].type == 'P' and self.energie >= 10)
         elif (action == 'f'):
-            return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 15 and self.bois >= 10 and self.metal >= 5)
-        elif (action == 'm'):
-            return (self.plateau.mat[coord[0]][coord[1]].type == 'M' and self.energie >= 10 and self.bois >= 15)
+            return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10 and self.bois >= 10 and self.plastique >= 20)
         elif (action == 'p'):
             return (self.plateau.mat[coord[0]][coord[1]].type == ' ' and self.energie >= 10)
         elif (action == 'j'):
@@ -181,7 +167,23 @@ def init_plateau():
             if (i%10 == 0):
                 mat.append(L)
                 L = []
+        for i in range (4):
+            creer_ile(mat)        
         return mat
+
+def creer_ile(mat):
+    rng= randint (0,99)
+    taille = randint(5,10)
+    agrandir_ile(mat, (rng//10, rng%10), taille)
+
+def agrandir_ile(mat, coord, taille):
+    mat[coord[0]][coord[1]].type = 'I'
+    if (taille != 0):
+        rng = randint(1,7)
+        if (rng == 4):
+            rng = 8
+        agrandir_ile(mat, (coord[0] + rng//3 -1, coord[1] + rng%3 -1), taille -1)
+
 
 def perte():
     #action si perte
@@ -203,6 +205,7 @@ def choix_coord():
     a = int(input ("entre la ligne de la coord (entre 0 et 9)"))
     b = int(input ("entre la colonne de la coordonnée (entre 0 et 9)"))
     return (a,b)
+
 
 if __name__ == "__main__":
     partie = Partie()
