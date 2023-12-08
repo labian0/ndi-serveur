@@ -45,4 +45,9 @@ def init_plateau():
     gm.add_id_game_couple(id, plateau_serialise)
     return {"plateau": plateau_serialise}
 
+@app.route("/save") #DEBUG FUNCTION
+def save_gm():
+    gm.save()
+    return Response(status=200)
+
 app.run(host="0.0.0.0")
