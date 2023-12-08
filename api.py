@@ -45,6 +45,12 @@ def init_plateau():
     gm.add_id_game_couple(id, plateau_serialise)
     return {"plateau": plateau_serialise}
 
+@app.route("/plateau_golmon", methods=["GET"])
+def plateau_golmon():
+    plateau = Plateau()
+    plateau_serialise = plateau.serialiser()
+    return {"plateau": plateau_serialise}
+
 @app.route("/save") #DEBUG FUNCTION
 def save_gm():
     gm.save()
