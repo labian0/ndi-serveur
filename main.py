@@ -1,5 +1,5 @@
 from random import randint
-
+import json
 
 class Case:
     def __init__(self):
@@ -130,6 +130,25 @@ class Partie:
             return (self.plateau.mat[coord[0]][coord[1]].type == 'B' and self.energie >= 5)
         elif (action == 'e'): # finir le tour
             return True
+
+    def actions_disponibles(self, coord):
+        total_actions = {
+            "r": None,
+            "f": None,
+            "m": None,
+            "p": None,
+            "b": None,
+            "d": None,
+            "c": None,
+            "e": None
+            }
+        for i in total_actions:
+            if (choix_possible(i,coord)):
+                total_actions[i] = True
+            else :
+                total_actions[i] = False
+        return json.dumps(total_actions)
+
 
     def fin_de_tour(self):
         self.tour += 1
