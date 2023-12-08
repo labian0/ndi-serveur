@@ -45,6 +45,8 @@ def init_plateau():
     if session_token is None:
         return Response(status=401)
     id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
     partie = Partie()
     partie_ser = partie.serialiser()
     gm.add_id_game_couple(id, partie_ser)
