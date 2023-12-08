@@ -52,6 +52,7 @@ def init_plateau():
 
 @app.route("/actions/retirer_dechet", methods=["POST"])
 def retirer_dechet():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
@@ -61,77 +62,101 @@ def retirer_dechet():
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("r", coord):
+        return Response(status=401)
     game.retirer_dechet(coord)
-
+    a = game.serialiser()
+    return a
 
 @app.route("/actions/fabriquer_infrastructure", methods=["POST"])
 def fabriquer_infrastructure():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("f", coord):
+        return Response(status=401)
     game.fabriquer_infrastructure(coord)
-    a = game.serialiser
-
+    a = game.serialiser()
+    return a
 
 @app.route("/actions/recolter_minerais", methods=["POST"])
 def recolter_minerais():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("m", coord):
+        return Response(status=401)
     game.recolter_minerais(coord)
-    a = game.serialiser
+    a = game.serialiser()
+    return a
 
 @app.route("/actions/planter_arbre", methods=["POST"])
 def planter_arbre():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("p", coord):
+        return Response(status=401)
     game.planter_arbre(coord)
-    a = game.serialiser
-
+    a = game.serialiser()
+    return a
 
 @app.route("/actions/bruler_dechet", methods=["POST"])
 def bruler_dechet():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("b", coord):
+        return Response(status=401)
     game.bruler_dechet(coord)
-    a = game.serialiser
+    a = game.serialiser()
+    return a
 
 @app.route("/actions/depolluer", methods=["POST"])
 def depolluer():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("d", coord):
+        return Response(status=401)
     game.depolluer()
-    a = game.serialiser
+    a = game.serialiser()
+    return a
 
 @app.route("/actions/couper_arbre", methods=["POST"])
 def couper_arbre():
+    coord = (request.form.get('coord'))
     session_token = request.form.get('session_token')
     id = sm.get_id(session_token)
     if id is None:
         return Response(status=401)
     game = Partie()
     game.deserialiser(ser_game)
+    if not game.choix_possible("c", coord):
+        return Response(status=401)
     game.couper_arbre(coord)
-    a = game.serialiser
-
+    a = game.serialiser()
+    return a
 
 @app.route("/plateau_golmon", methods=["GET"])
 def plateau_golmon():
