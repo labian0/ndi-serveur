@@ -45,16 +45,17 @@ def init_plateau():
     if session_token is None:
         return Response(status=401)
     id = sm.get_id(session_token)
-    plateau = Plateau()
-    plateau_serialise = plateau.serialiser()
-    gm.add_id_game_couple(id, plateau_serialise)
-    return {"plateau": plateau_serialise}
+    partie = Partie()
+    partie_ser = partie.serialiser()
+    gm.add_id_game_couple(id, partie_ser)
+    return partie_ser
 
 @app.route("/plateau_golmon", methods=["GET"])
 def plateau_golmon():
-    plateau = Plateau()
-    plateau_serialise = plateau.serialiser()
-    return {"plateau": plateau_serialise}
+    partie = Partie()
+    partie_ser = partie.serialiser()
+    gm.add_id_game_couple(id, partie_ser)
+    return partie_ser
 
 @app.route("/save") #DEBUG FUNCTION
 def save_gm():
