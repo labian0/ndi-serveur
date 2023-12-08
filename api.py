@@ -50,6 +50,20 @@ def init_plateau():
     gm.add_id_game_couple(id, partie_ser)
     return partie_ser
 
+@app.route("/actions_disponibles", methods=["POST"])
+def actions_disponibles():
+    coord = request.form.get('coord')
+    session_token = request.form.get('session_token')
+    id = sm.get_id(session_token)
+    if id is None:
+        return Response(status=401)
+    ser_game = gm.get_game(id)
+    if ser_game is None:
+        return Response(status=401)
+    game = Partie()
+    game.deserialiser(ser_game)
+    return game.actions_disponibles(coord)
+
 @app.route("/actions/retirer_dechet", methods=["POST"])
 def retirer_dechet():
     coord = (request.form.get('coord'))

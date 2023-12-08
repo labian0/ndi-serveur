@@ -143,11 +143,8 @@ class Partie:
             "e": None
             }
         for i in total_actions:
-            if (choix_possible(i,coord)):
-                total_actions[i] = True
-            else :
-                total_actions[i] = False
-        return json.dumps(total_actions)
+            total_actions[i] = choix_possible(i,coord)
+        return total_actions
 
 
     def fin_de_tour(self):
