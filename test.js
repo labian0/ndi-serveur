@@ -1,3 +1,5 @@
+
+
 class Matrice {
     constructor() {
         this.matrice = [[1, 2, 6], [5, 4, 7], [6, 5, 4]];
